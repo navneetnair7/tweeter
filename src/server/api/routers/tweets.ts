@@ -1,13 +1,9 @@
-import { Prisma, Tweet } from "@prisma/client";
-import { inferAsyncReturnType } from "@trpc/server";
-import { userAgent } from "next/server";
 import { z } from "zod";
 
 import {
   createTRPCRouter,
   publicProcedure,
   protectedProcedure,
-  createTRPCContext,
 } from "~/server/api/trpc";
 
 export const tweetRouter = createTRPCRouter({
