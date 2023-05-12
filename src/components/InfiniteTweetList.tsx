@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import { VscHeart, VscHeartFilled } from "react-icons/vsc";
 import { IconHoverEffect } from "./IconHoverEffect";
 import { api } from "~/utils/api";
+import { LoadingSpinner } from "./LoadingSpinner";
 
 type Tweet = {
   id: string;
@@ -30,7 +31,7 @@ export function InfiniteTweetList({
   hasMore = false,
   fetchNewTweets,
 }: InfiniteTweetList) {
-  if (isLoading) return <h1>Loading...</h1>;
+  if (isLoading) return <LoadingSpinner />;
   if (isError) return <h1>Error!</h1>;
   // if (tweets == null) return null;
   if (tweets == null || tweets.length == 0) {
@@ -44,7 +45,7 @@ export function InfiniteTweetList({
         dataLength={tweets.length}
         next={fetchNewTweets}
         hasMore={hasMore}
-        loader={"Loading..."}
+        loader={<LoadingSpinner />}
       >
         {tweets.map((tweet) => {
           return <TweetCard key={tweet.id} {...tweet} />;
@@ -94,6 +95,10 @@ function TweetCard({
         };
       };
       trpcUtils.tweet.infiniteFeed.setInfiniteData({}, updateData);
+      trpcUtils.tweet.infinteProfileFeed.setInfiniteData(
+        { userId: user.id },
+        updateData
+      );
     },
   });
   function handleToggleLike() {
@@ -101,13 +106,13 @@ function TweetCard({
   }
   return (
     <li className="flex gap-4 border-b p-4 ">
-      <Link href={`/profile/${user.id}`}>
+      <Link href={`/profiles/${user.id}`}>
         <ProfileImage src={user.image} />
       </Link>
       <div className="flex flex-grow flex-col">
         <div className="flex gap-1">
           <Link
-            href={`/profile/${user.id}`}
+            href={`/profiles/${user.id}`}
             className="font-bold outline-none hover:underline focus-visible:underline"
           >
             {user.name}
